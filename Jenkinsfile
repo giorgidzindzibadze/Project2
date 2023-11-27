@@ -17,7 +17,7 @@ pipeline {
                     steps {
                         script {
                             // Run Maven build using bat
-                            bat 'mvn clean install'
+                            bat 'mvn clean test'
                         }
                     }
                 }
