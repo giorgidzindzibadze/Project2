@@ -12,15 +12,15 @@ pipeline {
                 stage('Maven Project') {
                     steps {
                         script {
-                            sh 'mvn clean test'
-                            sh 'mvn allure:report' 
+                            bat 'mvn clean test'
+                            bat 'mvn allure:report' 
                         }
                     }
                 }
                 stage('Get Maven Version') {
                     steps {
                         script {
-                            sh 'mvn --version'
+                            bat 'mvn --version'
                         }
                     }
                 }
