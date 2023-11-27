@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                deleteDir() 
                 checkout scm
             }
         }
@@ -12,6 +13,7 @@ pipeline {
                     steps {
                         script {
                             sh 'mvn clean test'
+                            sh 'mvn allure:report' 
                         }
                     }
                 }
