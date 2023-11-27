@@ -9,42 +9,25 @@ pipeline {
             }
         }
 
-        stage('Run Maven Project') {
+        stage('Run Maven Project and Get Version') {
             parallel {
                 stage('Build and Test') {
                     steps {
                         script {
+                            // Ensure Maven is in the system PATH
                             def mvnHome = tool 'Maven3'
                             bat "${mvnHome}/bin/mvn clean test"
                         }
                     }
                 }
 
-                stage('Allure Report') {
+                stage('Get Maven Version') {
                     steps {
                         script {
                             def mvnHome = tool 'Maven3'
-                            bat "${mvnHome}/bin/mvn allure:report"
-                        }
-                        post {
-                            always {
-                                allure([
-                                    includeProperties: false,
-                                    jdk: '',
-                                    results: [[path: 'target/allure-results']]
-                                ])
-                            }
+                            bat "${mvnHome}/bin/mvn --version"
                         }
                     }
-                }
-            }
-        }
-
-        stage('Get Maven Version') {
-            steps {
-                script {
-                    def mvnHome = tool 'Maven3'
-                    bat "${mvnHome}/bin/mvn --version"
                 }
             }
         }
@@ -52,6 +35,7 @@ pipeline {
 
     post {
         always {
+            // Clean up workspace
             cleanWs()
         }
     }
