@@ -4,19 +4,20 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                deleteDir() // Clean workspace
-                checkout scm
+                script {
+                    // Checkout your branch
+                    checkout([$class: 'GitSCM', branches: [[name: 'project_dev']], userRemoteConfigs: [[url: 'https://github.com/giorgidzindzibadze/Project2.git']]])
+                }
             }
         }
 
-        stage('Run Maven Project and Get Version') {
+        stage('Build and Get Version') {
             parallel {
-                stage('Build and Test') {
+                stage('Run Maven Project') {
                     steps {
                         script {
-                            // Ensure Maven is in the system PATH
-                            def mvnHome = tool 'Maven3'
-                            bat "${mvnHome}/bin/mvn clean test"
+                            // Run Maven build
+                            sh 'mvn clean install'
                         }
                     }
                 }
@@ -24,19 +25,12 @@ pipeline {
                 stage('Get Maven Version') {
                     steps {
                         script {
-                            def mvnHome = tool 'Maven3'
-                            bat "${mvnHome}/bin/mvn --version"
+                            // Get Maven version
+                            sh 'mvn --version'
                         }
                     }
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            // Clean up workspace
-            cleanWs()
         }
     }
 }
